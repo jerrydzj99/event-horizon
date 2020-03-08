@@ -5,7 +5,7 @@ using UnityEngine;
 public class MainController : MonoBehaviour
 {
     public DataController dataController;
-    public PlayerController playerController;
+    public Player player;
     public GameObject deadend;
     public GameObject hallway;
     public GameObject corner;
@@ -13,7 +13,7 @@ public class MainController : MonoBehaviour
     public GameObject intersection;
 
     // ***** TODO: PRIVATE VARIABLES *****
-    private int[][] mapArray;
+    private int[,] mapArray;
     private int playerX;
     private int playerY;
 
@@ -21,6 +21,11 @@ public class MainController : MonoBehaviour
     void Start()
     {
         // ***** TODO: PROCEDUALLY GENERATE THE MAP *****
+
+        // For testing only!
+        mapArray = new int[4, 3] {{0, 0, 0}, {1, 1, 1}, {0, 0, 0}, {0, 0, 0}};
+        playerX = 1;
+        playerY = 0;
 
         // ***** TODO: INITIALIZE PLAYER POSITION *****
 
@@ -43,44 +48,54 @@ public class MainController : MonoBehaviour
         switch (direction)
         {
             case DataController.Direction.Up:
-                newY = playerY + 1;
-                break;
-            case DataController.Direction.Down:
-                newY = playerY - 1;
-                break;
-            case DataController.Direction.Left:
                 newX = playerX - 1;
                 break;
-            case DataController.Direction.Right:
+            case DataController.Direction.Down:
                 newX = playerX + 1;
                 break;
+            case DataController.Direction.Left:
+                newY = playerY - 1;
+                break;
+            case DataController.Direction.Right:
+                newY = playerY + 1;
+                break;
         }
+
+        Debug.Log(newX);
+        Debug.Log(newY);
 
         int numDoors = 0;
         bool up = false;
         bool down = false;
         bool left = false;
         bool right = false;
-        if (newX + 1 < mapArray.GetLength(0) && mapArray[newX + 1][newY] == 1)
+
+        if (newY + 1 < mapArray.GetLength(1) && mapArray[newX, newY + 1] == 1)
         {
+            Debug.Log("right door available");
             numDoors += 1;
             right = true;
         }
-        if (newX - 1 > 0 && mapArray[newX - 1][newY] == 1)
+        if (newY - 1 >= 0 && mapArray[newX, newY - 1] == 1)
         {
+            Debug.Log("left door available");
             numDoors += 1;
             left = true;
         }
-        if (newY + 1 < mapArray[0].GetLength(1) && mapArray[newX][newY + 1] == 1)
+        if (newX + 1 < mapArray.GetLength(0) && mapArray[newX + 1, newY] == 1)
         {
-            numDoors += 1;
-            up = true;
-        }
-        if (newY - 1 > 0 && mapArray[newX][newY - 1] == 1)
-        {
+            Debug.Log("down door available");
             numDoors += 1;
             down = true;
         }
+        if (newX - 1 >= 0 && mapArray[newX - 1, newY] == 1)
+        {
+            Debug.Log("up door available");
+            numDoors += 1;
+            up = true;
+        }
+
+        Debug.Log(numDoors);
 
         GameObject room = corner;
         switch(numDoors)
@@ -102,6 +117,9 @@ public class MainController : MonoBehaviour
         }
 
         //TODO calculate local transform, and pass it into update player position
+
+        player.UpdatePlayerPosition(room);
+
     }
 
 

@@ -24,22 +24,19 @@ public class Player : MonoBehaviour
 
     // ***** TODO: TRIGGER MOVEMENT *****
 
-    void OnTriggerStay(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         // The Direction and UP, DOWN, LEFT and RIGHT are enums declared in DataController
-        if (other.GetComponent<DataController.Direction>() == DataController.Direction.Up)
+        if (other.CompareTag("UpPortal"))
         {
             control.MovePlayer(DataController.Direction.Up);
-        }
-        if (other.GetComponent<DataController.Direction>() == DataController.Direction.Down)
+        } else if (other.CompareTag("DownPortal"))
         {
             control.MovePlayer(DataController.Direction.Down);
-        }
-        if (other.GetComponent<DataController.Direction>() == DataController.Direction.Left)
+        } else if (other.CompareTag("LeftPortal"))
         {
             control.MovePlayer(DataController.Direction.Left);
-        }
-        if (other.GetComponent<DataController.Direction>() == DataController.Direction.Right)
+        } else if (other.CompareTag("RightPortal"))
         {
             control.MovePlayer(DataController.Direction.Right);
         }
@@ -48,9 +45,10 @@ public class Player : MonoBehaviour
     // ***** TODO: UPDATE PLAYER POSITION *****
 
     // Move the player to the room passed in as an argument and set the localTransform
-    public void UpdatePlayerPosition(GameObject room, Transform localTransform)
+    public void UpdatePlayerPosition(GameObject room)
     {
         currentRoom = room;
-        player.transform.position = localTransform.position;
+        player.transform.parent = room.transform;
+        player.transform.localPosition = new Vector3(0f, 0f, 0f);
     }
 }
