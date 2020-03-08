@@ -42,14 +42,18 @@ public class MainController : MonoBehaviour
         int newY = playerY;
         switch (direction)
         {
-            case Up:
+            case DataController.Direction.Up:
                 newY = playerY + 1;
-            case Down:
+                break;
+            case DataController.Direction.Down:
                 newY = playerY - 1;
-            case Left:
+                break;
+            case DataController.Direction.Left:
                 newX = playerX - 1;
-            case Right:
-                newx = playerX + 1;
+                break;
+            case DataController.Direction.Right:
+                newX = playerX + 1;
+                break;
         }
 
         int numDoors = 0;
@@ -57,25 +61,25 @@ public class MainController : MonoBehaviour
         bool down = false;
         bool left = false;
         bool right = false;
-        if (newX + 1 < mapArray.Length() && mapArray[newX + 1][newY])
-        {
-            numDoors += 1;
-            up = true;
-        }
-        if (newX - 1 > 0 && mapArray[newX - 1][newY])
-        {
-            numDoors += 1;
-            down = true;
-        }
-        if (newY + 1 < mapArray[0].Length() && mapArray[newX][newY + 1])
+        if (newX + 1 < mapArray.GetLength(0) && mapArray[newX + 1][newY] == 1)
         {
             numDoors += 1;
             right = true;
         }
-        if (newY - 1 > 0 && mapArray[newX][newY - 1])
+        if (newX - 1 > 0 && mapArray[newX - 1][newY] == 1)
         {
             numDoors += 1;
             left = true;
+        }
+        if (newY + 1 < mapArray[0].GetLength(1) && mapArray[newX][newY + 1] == 1)
+        {
+            numDoors += 1;
+            up = true;
+        }
+        if (newY - 1 > 0 && mapArray[newX][newY - 1] == 1)
+        {
+            numDoors += 1;
+            down = true;
         }
 
         GameObject room = corner;
@@ -83,14 +87,18 @@ public class MainController : MonoBehaviour
         {
             case 1:
                 room = deadend;
+                break;
             case 2:
-                if ((left && right) || (up && down) {
+                if ((left && right) || (up && down)) {
                     room = hallway;
                 }
+                break;
             case 3:
                 room = tshaped;
+                break;
             case 4:
                 room = intersection;
+                break;
         }
 
         //TODO calculate local transform, and pass it into update player position
